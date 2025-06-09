@@ -40,6 +40,7 @@ model Contact {
 model Address {
 	id Int @id @default(autoincrement())
 	street String @db.VarChar(100)
+	city String @db.VarChar(100)
 	province String @db.VarChar(100)
 	country String @db.VarChar(100)
 	postal_code String @db.VarChar(10)

@@ -136,7 +136,7 @@ Response Body Success:
 			 "phone" : "2821222332"
 		}
 	],
-	"pagging" : {
+	"paging" : {
 		"page" : 1,	
 		"total_item" : 10
 		"total_page" : 1,
@@ -170,6 +170,6 @@ Response Body Success:
 Response Body Error:
 ```json
 {
-	"errors": "unauthorized or data not found"
+	"errors": "unauthorized"
 }
 ```

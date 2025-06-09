@@ -26,7 +26,7 @@ describe('POST /api/contacts', function () {
 			phone: '08840000'
 		})
 		
-		expect(result.status).toBe(200);
+		expect(result.status).toBe(201);
 		expect(result.body.data.id).toBeDefined();
 		expect(result.body.data.first_name).toBe('Vincent');
 		expect(result.body.data.last_name).toBe('Chance');
@@ -206,11 +206,25 @@ describe('GET /api/contacts', function () {
 		.get('/api/contacts')
 		.set('Authorization', 'test')
 		
-		console.log(result);
 		
 		expect(result.status).toBe(200)
 		expect(result.body.data.length).toBe(10);
 		expect(result.body.paging.page).toBe(1);
+		expect(result.body.paging.total_page).toBe(2);
+		expect(result.body.paging.total_item).toBe(15);
+	})
+	
+	it('should get search into page 2', async () => {
+		const result = await supertest(web)
+		.get('/api/contacts')
+		.query({ page: 2 })
+		.set('Authorization', 'test')
+		
+
+		
+		expect(result.status).toBe(200);
+		expect(result.body.data.length).toBe(5);
+		expect(result.body.paging.page).toBe(2);
 		expect(result.body.paging.total_page).toBe(2);
 		expect(result.body.paging.total_item).toBe(15);
 	})
