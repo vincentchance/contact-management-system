@@ -137,9 +137,10 @@ Response Body Success:
 		}
 	],
 	"pagging" : {
-		"page" : 1,
-		"total_page" : 1,
+		"page" : 1,	
 		"total_item" : 10
+		"total_page" : 1,
+
 	}
 }
 ``` 
@@ -153,7 +154,7 @@ Response Body Error:
 
 ## Remove Contact API
 
-Endpoint : DELETE api/contacts/:id
+Endpoint : DELETE api/contacts/:contactId
 
 Headers: 
 	- Authorization: token
@@ -162,7 +163,7 @@ Headers:
 Response Body Success:
 ```json
 {
-	"data" : "OK"
+	"data" : "Ok"
 }
 ``` 
 
