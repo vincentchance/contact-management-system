@@ -95,11 +95,39 @@ export const createTestAddresses = async () => {
 	})
 }
 
+
+export const createManyTestAddresses = async() => {
+	const testContact = await getTestContact();
+	for(let x = 1; x <= 2;x++){
+		await prismaClient.address.create({
+			data: {
+				contact_id: testContact.id,
+				street: `jalan utomo ${x}`,
+				city: `Pekanbaru ${x}`,
+				province: "riau",
+				country: "Indonesia",
+				postal_code: "28111"
+			}
+		})
+	}
+}
+
+
 export const getTestAddresses = async () => {
 	return await prismaClient.address.findFirst({
 		where: {
 			contact: {
 				username: 'Vincent'
+			}
+		}
+	})
+}
+
+export const getManyTestAddresses = async () => {
+	return await prismaClient.address.findMany({
+		where: {
+			contact: {
+				username: "Vincent"
 			}
 		}
 	})

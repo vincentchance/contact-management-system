@@ -47,5 +47,33 @@ const updateAddress = async (req, res, next) => {
 	}
 }
 
+const removeAddress = async (req, res, next) => {
+	try {
+		const user = req.user;
+		const contactId = req.params.contactId;
+		const addressId = req.params.addressId;
+		
+		const result = await addressService.removeAddress(user, contactId, addressId);
+		res.status(200).json({
+			data: 'Ok'
+		})
+	} catch (err) {
+		next(err)
+	}
+}
 
-export default { createAddress, getAddress, updateAddress }
+const getAllAddress = async( req, res, next ) => {
+	try{
+		const user = req.user;
+		const contactId = req.params.contactId;
+		
+		const result = await addressService.getAllAddress(user, contactId)
+		res.status(200).json({
+			data: result
+		})
+	} catch (err) {
+		next(err)
+	}
+}
+
+export default { createAddress, getAddress, updateAddress, removeAddress, getAllAddress }
