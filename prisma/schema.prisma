@@ -22,6 +22,7 @@ model User {
 	contacts Contact[]
 	
 	@@map("users")
+  @@unique([token])
 }
 
 model Contact {
@@ -35,6 +36,7 @@ model Contact {
 	addresses Address[]
 	
 	@@map("contacts")
+  @@index([username])
 }
 
 model Address {
@@ -48,4 +50,5 @@ model Address {
 	contact Contact @relation(fields: [contact_id], references: [id])
 	
 	@@map("addresses")
+  @@index([contact_id])
 }
