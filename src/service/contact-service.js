@@ -105,7 +105,10 @@ const removeContact = async (user, contactId) => {
 const searchContact = async (user, request) => {
 	request = validate(searchContactValidation, request)
 	
-	logger.info(request)
+	// normalize inputs
+	if (request.name) request.name = request.name.trim();
+	if (request.email) request.email = request.email.trim();
+	if (request.phone) request.phone = request.phone.trim();
 	//  page 1 - 1 = 0 size = 10 * 0  
 	//  page 2 - 1 = 1 size = 10 * 1 = 10 
 	const skip = ( request.page  - 1) * request.size
@@ -121,12 +124,14 @@ const searchContact = async (user, request) => {
 		OR: [
 				{
 					first_name: {
-						contains: request.name
+						contains: request.name,
+						mode: 'insensitive'
 					}
 				},
 				{
 					last_name: {
-							contains: request.name
+							contains: request.name,
+							mode: 'insensitive'
 						}
 					}
 				]
@@ -137,26 +142,39 @@ const searchContact = async (user, request) => {
 		OR: [
 				{
 					email: {
-						contains: request.email
+						contains: request.email,
+						mode: 'insensitive'
 					}
 				}
 			]
 		});
 	}
 	
-	const contacts = await prismaClient.contact.findMany({
+	const contactsPromise = prismaClient.contact.findMany({
 		where: {
 			AND: filters
 		},
 		take: request.size,
-		skip: skip
-	})
+		skip: skip,
+		select: {
+			id: true,
+			first_name: true,
+			last_name: true,
+			email: true,
+			phone: true,
+		}
+	});
 	
-	const totalItems = await prismaClient.contact.count({
+	const countPromise = prismaClient.contact.count({
 		where: {
 			AND: filters
 		}
 	});
+	
+	const [contacts, totalItems] = await prismaClient.$transaction([
+		contactsPromise,
+		countPromise,
+	]);
 	
 	return {
 		data: contacts, 

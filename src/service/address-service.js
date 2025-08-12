@@ -7,16 +7,15 @@ import { createAddressValidation, getAddressValidation, updateAddressValidation 
 const checkContactExist = async (user , contactId) => {
 	contactId = validate(getContactValidation, contactId);
 	
-	console.log(contactId);
-	console.log(user.username);
-	const totalContactInDatabase = await prismaClient.contact.count({
+	const exists = await prismaClient.contact.findFirst({
 		where: {
 			username: user.username,
 			id: contactId
-		}
+		},
+		select: { id: true }
 	})
 	
-	if(totalContactInDatabase !== 1){
+	if(!exists){
 		throw new ResponseError(404, "contact is not found");
 	}
 	
@@ -66,14 +65,15 @@ const updateAddress = async(user, contactId, request) => {
 	contactId = await checkContactExist(user, contactId);
 	const address = validate(updateAddressValidation, request);
 	
-	const totalAddressInDatabase = await prismaClient.address.count({
+	const exists = await prismaClient.address.findFirst({
 		where: {
 			contact_id:  contactId,
 			id: address.id
-		}
+		},
+		select: { id: true }
 	})
 	
-	if(totalAddressInDatabase !== 1){
+	if(!exists){
 		throw new ResponseError(404, 'address not found')
 	}
 	
@@ -103,14 +103,15 @@ const removeAddress = async (user, contactId, addressId) => {
     contactId = await checkContactExist(user, contactId);
     addressId = validate(getAddressValidation, addressId);
 
-    const totalAddressInDatabase = await prismaClient.address.count({
+    const exists = await prismaClient.address.findFirst({
         where: {
             contact_id: contactId,
             id: addressId
-        }
+        },
+        select: { id: true }
     });
-
-    if (totalAddressInDatabase !== 1) {
+ 
+    if (!exists) {
         throw new ResponseError(404, "address is not found");
     }
 
@@ -124,13 +125,12 @@ const removeAddress = async (user, contactId, addressId) => {
 const getAllAddress = async (user, contactId) => {
 	contactId = await checkContactExist(user, contactId);
 	
-	const totalAddressInDatabase = await prismaClient.address.count({
-		where: {
-			contact_id: contactId,
-		}
+	const first = await prismaClient.address.findFirst({
+		where: { contact_id: contactId },
+		select: { id: true }
 	});
 	
-	if(totalAddressInDatabase === 0){
+	if(!first){
 		throw new ResponseError(404, "address not found")
 	}
 	
