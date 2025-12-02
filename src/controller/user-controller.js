@@ -26,7 +26,7 @@ const login = async(req, res, next) => {
 
 const getUser = async(req, res, next) => {
 	try{
-		const username = req.user;
+		const username = req.user.username;
 		const result = await userService.getUser(username)
 		res.status(200).json({
 			data: result
