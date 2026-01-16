@@ -6,6 +6,8 @@ import { v4 as uuid } from 'uuid';
 import bcrypt from 'bcrypt';
 //registerUserValidation adalah schema, dan request adalah data nama masuk ke dalam Form
 
+const defaultSaltRounds = process.env.NODE_ENV === 'test' ? 4 : 10;
+
 const register = async (request) => {
 	const user = validate(registerUserValidation, request);
 	
@@ -20,7 +22,7 @@ const register = async (request) => {
 		throw new ResponseError(400, "username is already exist");
 	}
 	
-	user.password = await bcrypt.hash(user.password, 10)
+	user.password = await bcrypt.hash(user.password, defaultSaltRounds)
 	
 	const result = prismaClient.user.create({
 		data: user,
@@ -107,7 +109,7 @@ const patchUser = async (request) => {
 		data.name = user.name
 	}
 	if(user.password){
-		data.password = await bcrypt.hash(user.password, 10)
+		data.password = await bcrypt.hash(user.password, defaultSaltRounds)
 	}
 	
 	return await prismaClient.user.update({
